@@ -6,13 +6,15 @@ const BASE_URL = "https://api.spoonacular.com/recipes";
 /**
  * Suche Rezepte basierend auf einem Suchbegriff
  */
-export const searchRecipes = async (query, diet, sort,) => {
+export const searchRecipes = async (query, diet, sort, cuisine, offset = 0) => {
   const res = await axios.get(`${BASE_URL}/complexSearch`, {
     params: {
       apiKey: API_KEY,
       query,
       diet,
       sort,
+      cuisine,
+      offset,
       number: 20,
       addRecipeInformation: true,
     },
