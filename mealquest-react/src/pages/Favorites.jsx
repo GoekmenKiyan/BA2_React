@@ -1,58 +1,35 @@
 import { useFavorites } from "../state/FavoritesContext";
-import { Link } from "react-router-dom";
+import RecipeCard from "../components/RecipeCard";
 import { exportFavoritesAsPDF } from "../utils/pdfExport";
 
 export default function Favorites() {
-  const { favorites, toggleFavorite } = useFavorites();
-
-  if (favorites.length === 0) {
-    return (
-      <div className="p-8">
-        <h1 className="text-2xl font-bold mb-4">Favoriten</h1>
-        <button
-            onClick={() => exportFavoritesAsPDF(favorites)}
-            className="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-            >
-            Als PDF exportieren 📄
-        </button>
-        <p>Du hast noch keine Rezepte gespeichert.</p>
-      </div>
-    );
-  }
+  const { favorites } = useFavorites();
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Deine Favoriten ❤️</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {favorites.map((recipe) => (
-          <div
-            key={recipe.id}
-            className="bg-white rounded-xl shadow-md hover:shadow-xl transition overflow-hidden"
-          >
-            <Link to={`/recipe/${recipe.id}`}>
-              <img
-                src={recipe.image}
-                alt={recipe.title}
-                className="w-full h-56 object-cover"
-              />
-              <div className="p-4">
-                <h2 className="text-lg font-bold mb-1 text-center">{recipe.title}</h2>
-                <p className="text-sm text-zinc-500 text-center">Details anzeigen →</p>
-              </div>
-            </Link>
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6 text-center text-zinc-800">❤️ Meine Favoriten</h1>
 
-            <div className="p-4 pt-0">
-              <button
-                onClick={() => toggleFavorite(recipe)}
-                className="w-full bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
-              >
-                Entfernen ❤️
-              </button>
-            </div>
+      {favorites.length === 0 ? (
+        <p className="text-center text-zinc-500">Du hast noch keine Favoriten gespeichert.</p>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {favorites.map((recipe) => (
+              <RecipeCard key={recipe.id} recipe={recipe} />
+            ))}
           </div>
-        ))}
-      </div>
 
+          {/* ✅ Nur wenn Favoriten vorhanden sind */}
+          <div className="text-center mt-10">
+            <button
+              onClick={() => exportFavoritesAsPDF(favorites)}
+              className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-md font-semibold shadow"
+            >
+              📄 Als PDF exportieren
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
