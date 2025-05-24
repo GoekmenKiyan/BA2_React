@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { searchRecipes } from "../api/spoonacular";
 import { Link } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
+
 
 export default function RecipeList() {
   const [recipes, setRecipes] = useState([]);
@@ -13,7 +14,7 @@ export default function RecipeList() {
   const sort = searchParams.get("sort");
 
   useEffect(() => {
-    if (!query) return;
+    if (!query && !diet && !sort) return;
     setLoading(true);
     searchRecipes(query, diet, sort)
       .then(setRecipes)
@@ -21,26 +22,30 @@ export default function RecipeList() {
       .finally(() => setLoading(false));
   }, [query, diet, sort]);
 
-
   return (
     <div className="p-8">
       <SearchBar />
 
-      {loading && <p>Lade Rezepte...</p>}
+      {loading && <p className="mt-10 text-center text-zinc-500">Lade Rezepte...</p>}
+      {!loading && recipes.length === 0 && (
+        <p className="mt-10 text-center text-zinc-500">Keine Ergebnisse gefunden.</p>
+      )}
 
-      {!loading && recipes.length === 0 && <p>Keine Ergebnisse gefunden.</p>}
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* 🎯 Abstand zur SearchBar hinzufügen */}
+      <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {recipes.map((recipe) => (
-          <Link to={`/recipe/${recipe.id}`} key={recipe.id}>
-            <div className="border rounded-md p-4 shadow-sm hover:shadow-md transition">
-              <img
-                src={recipe.image}
-                alt={recipe.title}
-                className="w-full h-48 object-cover rounded"
-                loading="lazy"
-              />
-              <h2 className="text-lg font-semibold mt-2">{recipe.title}</h2>
+          <Link
+            to={`/recipe/${recipe.id}`}
+            key={recipe.id}
+            className="bg-white rounded-xl shadow-md hover:shadow-xl transition overflow-hidden"
+          >
+            <img
+              src={recipe.image}
+              alt={recipe.title}
+              className="w-full h-56 object-cover"
+            />
+            <div className="p-4">
+              <h2 className="text-lg font-bold mb-1 text-center">{recipe.title}</h2>
             </div>
           </Link>
         ))}

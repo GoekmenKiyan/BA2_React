@@ -5,8 +5,17 @@ export default {
     "./src/**/*.{js,jsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#6366f1", // indigo-500
+      },
+      fontFamily: {
+        serif: ['"Playfair Display"', 'serif'],
+        sans: ['Inter', 'sans-serif'],
+      },
+    },
   },
-  darkMode: 'class',
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 }

@@ -1,13 +1,11 @@
+import Navbar from "./components/Navbar";
 import AppRouter from "./router/AppRouter";
-import DarkModeToggle from "./components/DarkModeToggle";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-900 text-black dark:text-white transition">
-      <header className="p-4 flex justify-end">
-        <DarkModeToggle />
-      </header>
-      <main>
+    <div className="min-h-screen bg-white bg-neutral-100 text-gray-900">
+      <Navbar />
+      <main className="container mx-auto px-4 py-6">
         <AppRouter />
       </main>
     </div>
