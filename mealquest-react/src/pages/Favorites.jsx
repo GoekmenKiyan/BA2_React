@@ -27,7 +27,7 @@ export default function Favorites() {
         {favorites.map((recipe) => (
           <div
             key={recipe.id}
-            className="bg-white dark:bg-zinc-800 rounded-xl shadow-md hover:shadow-xl transition overflow-hidden"
+            className="bg-white rounded-xl shadow-md hover:shadow-xl transition overflow-hidden"
           >
             <Link to={`/recipe/${recipe.id}`}>
               <img
