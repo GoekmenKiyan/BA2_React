@@ -21,7 +21,8 @@ export default function Home() {
         Durchsuche unsere besten Gerichte nach Land oder Geschmack 🍝
       </p>
 
-      <CuisineNav />
+      {/* Fügt die Klasse ein, mit den Icons für predefiened Cuisine Searches */}
+      {/*<CuisineNav />*/}
 
       <div className="max-w-3xl mx-auto mt-6">
         <SearchBar onSearch={handleSearch} />
@@ -29,7 +30,7 @@ export default function Home() {
         <div className="mt-10">
           <Link
             to="/favorites"
-            className="inline-block bg-pink-600 text-white px-6 py-3 rounded-lg text-lg font-semibold shadow hover:bg-pink-700 transition"
+            className="inline-block bg-pink-400 text-white px-6 py-3 rounded-lg text-lg font-semibold shadow hover:bg-pink-700 transition"
           >
             ❤️ Meine Favoriten anzeigen
           </Link>
