@@ -1,124 +1,107 @@
-import { useEffect, useState, useCallback, useRef } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import { searchRecipes } from "../api/spoonacular";
-import { Link } from "react-router-dom";
-import SearchBar from "../components/SearchBar";
+import { useState, useEffect, useRef, useCallback } from "react";
+import axios from "axios";
+import { useSearchParams, useParams } from "react-router-dom";
+import RecipeCard from "../components/RecipeCard";
 
-export default function RecipeList() {
+const RecipeList = () => {
   const [recipes, setRecipes] = useState([]);
+  const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [offset, setOffset] = useState(0);
-
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const { query: paramQuery } = useParams();
 
-  const query = searchParams.get("q");
-  const diet = searchParams.get("diet");
-  const sort = searchParams.get("sort");
-  const cuisine = searchParams.get("cuisine");
+  const query = searchParams.get("q") || paramQuery || "";
+  const diet = searchParams.get("diet") || "";
+  const sort = searchParams.get("sort") || "";
 
   const observer = useRef();
+
   const lastRecipeRef = useCallback(
     (node) => {
       if (loading) return;
       if (observer.current) observer.current.disconnect();
-
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          setOffset((prev) => prev + 20);
+          setOffset((prev) => prev + 12);
         }
       });
-
       if (node) observer.current.observe(node);
     },
     [loading, hasMore]
   );
 
   useEffect(() => {
-    // Reset on new search
     setRecipes([]);
     setOffset(0);
     setHasMore(true);
-  }, [query, diet, sort, cuisine]);
+  }, [query, diet, sort]);
 
   useEffect(() => {
     const fetchRecipes = async () => {
-      if (!query && !diet && !sort && !cuisine) return;
-
+      if (!hasMore || loading) return;
       setLoading(true);
       try {
-        const newRecipes = await searchRecipes(query, diet, sort, cuisine, offset);
-        if (newRecipes.length === 0) setHasMore(false);
-        setRecipes((prev) => [...prev, ...newRecipes]);
-      } catch (err) {
-        console.error("Fehler beim Laden der Rezepte:", err);
+        const params = {
+          query,
+          diet,
+          sort,
+          number: 12,
+          offset,
+          apiKey: import.meta.env.VITE_SPOONACULAR_KEY,
+        };
+
+        const response = await axios.get(
+          "https://api.spoonacular.com/recipes/complexSearch",
+          { params }
+        );
+
+        const newResults = response.data.results || [];
+
+        const merged = [...recipes, ...newResults];
+        const unique = Array.from(new Map(merged.map(r => [r.id, r])).values());
+
+        setRecipes(unique);
+        setHasMore(newResults.length === 12);
+      } catch (error) {
+        console.error("Fehler beim Laden der Rezepte:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchRecipes();
-  }, [query, diet, sort, cuisine, offset]);
-
-  const handleSearch = (newQuery, newDiet, newSort) => {
-    const params = new URLSearchParams();
-    if (newQuery) params.set("q", newQuery);
-    if (newDiet) params.set("diet", newDiet);
-    if (newSort) params.set("sort", newSort);
-    navigate(`/search?${params.toString()}`);
-  };
+  }, [offset, query, diet, sort]);
 
   return (
-    <div className="p-8">
-      <SearchBar onSearch={handleSearch} />
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">
+        Suchergebnisse für: <span className="text-pink-500">"{query}"</span>
+      </h1>
 
       {recipes.length === 0 && !loading && (
-        <p className="mt-10 text-center text-zinc-500">Keine Ergebnisse gefunden.</p>
+        <p className="text-gray-600">Keine Rezepte gefunden.</p>
       )}
 
-      <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {recipes.map((recipe, index) => {
-          if (index === recipes.length - 1) {
-            return (
-              <Link
-                to={`/recipe/${recipe.id}`}
-                key={recipe.id}
-                ref={lastRecipeRef}
-                className="bg-white rounded-xl shadow-md hover:shadow-xl transition overflow-hidden"
-              >
-                <img
-                  src={recipe.image}
-                  alt={recipe.title}
-                  className="w-full h-56 object-cover"
-                />
-                <div className="p-4">
-                  <h2 className="text-lg font-bold mb-1 text-center">{recipe.title}</h2>
-                </div>
-              </Link>
-            );
-          } else {
-            return (
-              <Link
-                to={`/recipe/${recipe.id}`}
-                key={recipe.id}
-                className="bg-white rounded-xl shadow-md hover:shadow-xl transition overflow-hidden"
-              >
-                <img
-                  src={recipe.image}
-                  alt={recipe.title}
-                  className="w-full h-56 object-cover"
-                />
-                <div className="p-4">
-                  <h2 className="text-lg font-bold mb-1 text-center">{recipe.title}</h2>
-                </div>
-              </Link>
-            );
-          }
+          const isLast = index === recipes.length - 1;
+          return (
+            <div
+              key={recipe.id}
+              ref={isLast ? lastRecipeRef : null}
+            >
+              <RecipeCard recipe={recipe} />
+            </div>
+          );
         })}
       </div>
 
-      {loading && <p className="mt-6 text-center text-zinc-400">Lade mehr...</p>}
+      {loading && (
+        <p className="text-center text-gray-500 mt-6">Rezepte werden geladen…</p>
+      )}
     </div>
   );
-}
+};
+
+export default RecipeList;
