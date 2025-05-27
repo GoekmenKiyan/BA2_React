@@ -9,6 +9,7 @@ export default function RecipeCard({ recipe }) {
         <img
         src={recipe.image}
         alt={recipe.title}
+        loading="lazy"
         className="w-full h-52 object-cover rounded-xl"
         />
       <div className="p-4">

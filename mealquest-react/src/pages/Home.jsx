@@ -1,36 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import { Link } from "react-router-dom";
-import { searchRecipes, getRandomRecipes } from "../api/spoonacular";
-import RecipeCard from "../components/RecipeCard";
+import { lazy, Suspense, useCallback } from "react";
+
+const RandomPicks = lazy(() => import("../components/RandomPicks"));
+const VegetarianPicks = lazy(() => import("../components/VegetarianPicks"));
 
 export default function Home() {
   const navigate = useNavigate();
-  const [randomPicks, setRandomPicks] = useState([]);
-  const [vegetarianPicks, setVegetarianPicks] = useState([]);
 
-  const handleSearch = (query, diet, sort) => {
+  const handleSearch = useCallback((query, diet, sort) => {
     const params = new URLSearchParams();
     if (query) params.append("q", query);
     if (diet) params.append("diet", diet);
     if (sort) params.append("sort", sort);
     navigate(`/search?${params.toString()}`);
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const random = await getRandomRecipes(4); // 🌀 echte Random API
-        const vegetarian = await searchRecipes("", "vegetarian");
-        setRandomPicks(random);
-        setVegetarianPicks(vegetarian.slice(0, 3));
-      } catch (error) {
-        console.error("Fehler beim Laden der Startseite Rezepte:", error);
-      }
-    };
-    fetchData();
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="text-center">
@@ -51,35 +36,10 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 🎲 Random Picks Section */}
-      <section className="mt-16 px-6 max-w-6xl mx-auto text-left">
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-2xl">🎲</span>
-          <h3 className="text-xl font-semibold text-zinc-700">Random Picks</h3>
-        </div>
-        <div className="flex flex-wrap justify-between gap-6">
-          {randomPicks.map((recipe) => (
-            <div key={recipe.id} className="w-[22%] min-w-[220px]">
-              <RecipeCard recipe={recipe} />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 🥦 Vegetarian Picks Section */}
-      <section className="mt-16 px-6 max-w-6xl mx-auto text-left">
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-2xl">🥦</span>
-          <h3 className="text-xl font-semibold text-zinc-700">Our Vegetarian Picks</h3>
-        </div>
-        <div className="flex flex-wrap justify-between gap-6">
-          {vegetarianPicks.map((recipe) => (
-            <div key={recipe.id} className="w-[31%] min-w-[220px]">
-              <RecipeCard recipe={recipe} />
-            </div>
-          ))}
-        </div>
-      </section>
+      <Suspense fallback={<div className="mt-10">Lade Empfehlungen…</div>}>
+        <RandomPicks />
+        <VegetarianPicks />
+      </Suspense>
     </div>
   );
 }
