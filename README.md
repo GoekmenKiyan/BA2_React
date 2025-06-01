@@ -45,6 +45,8 @@ mealquest-react/
 ├── package.json          # Abhängigkeiten
 └── index.html            # Einstiegspunkt
 
+```
+
 ---
 
 ## 📦 Installation
