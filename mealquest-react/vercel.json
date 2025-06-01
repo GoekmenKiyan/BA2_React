@@ -3,10 +3,7 @@
   "builds": [
     {
       "src": "mealquest-react/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "mealquest-react/dist"
-      }
+      "use": "@vercel/static-build"
     }
   ],
   "routes": [
