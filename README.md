@@ -1,91 +1,108 @@
-# MealQuest 🍽️
+# MealQuest (React Version)
 
-MealQuest ist eine moderne Webanwendung, die es Benutzern ermöglicht, Rezepte zu durchsuchen, nach Kategorien zu filtern, zufällige oder vegetarische Gerichte zu entdecken und Lieblingsrezepte zu speichern. Das Projekt wurde im Rahmen einer Bachelorarbeit mit **React**, **Vite** und **TailwindCSS** entwickelt.
+Eine Vergleichsanwendung im Rahmen der Bachelorarbeit, implementiert als Single Page Application (SPA) mit React. Dieses Projekt ist Teil einer Evaluierung verschiedener JavaScript-Frameworks (Angular, Vue, React) hinsichtlich ihrer Eignung zur Entwicklung moderner SPAs.
 
----
+## 📑 Inhaltsverzeichnis
 
-## 🚀 Features
-
-- 🔍 Rezeptsuche mit der Spoonacular API
-- 🍝 Zufällige Rezepte & vegetarische Empfehlungen
-- 📚 Detailansicht einzelner Rezepte
-- 💾 Favoriten-Management mit globalem State
-- 📤 PDF-Export von Rezepten
-- 📱 Responsive UI mit TailwindCSS
-- 🌍 Navigation über React Router
-
----
-
-## ⚙️ Tech Stack
-
-- **Frontend**: React 19, React Router 7, TailwindCSS
-- **Build Tool**: Vite
-- **Styling**: TailwindCSS + Google Fonts (Playfair Display, Inter)
-- **API**: [Spoonacular](https://spoonacular.com/food-api)
-- **State Management**: React Context API
-- **PDF-Erzeugung**: jsPDF
-- **Icons**: react-icons
+- [Überblick](#überblick)
+- [Features](#features)
+- [Technologien](#technologien)
+- [Installation](#installation)
+- [Verwendung](#verwendung)
+- [Projektstruktur](#projektstruktur)
+- [Vergleichskontext](#vergleichskontext)
+- [Beispielbilder](#beispielbilder)
+- [Lizenz](#lizenz)
 
 ---
 
-## 🧩 Projektstruktur
+## 🧭 Überblick
 
-```txt
-mealquest-react/
-├── src/
-│   ├── api/              # Spoonacular API Zugriff
-│   ├── components/       # Wiederverwendbare UI-Komponenten
-│   ├── pages/            # Seiten: Home, RecipeList, Favorites etc.
-│   ├── router/           # Routing-Logik
-│   ├── state/            # Favoriten-Context
-│   └── utils/            # Hilfsfunktionen (z.B. PDF Export)
-├── .env                  # Spoonacular API Key
-├── tailwind.config.js    # Tailwind Konfiguration
-├── vite.config.js        # Vite Konfiguration
-├── package.json          # Abhängigkeiten
-└── index.html            # Einstiegspunkt
+**MealQuest** ist eine Rezeptsuche-App, die verschiedene APIs nutzt (z. B. Spoonacular), um Rezepte nach bestimmten Kriterien zu finden, zu filtern und anzuzeigen. Die Anwendung beinhaltet Features wie Favoriten, Zufallsempfehlungen und Export-Funktionalitäten.
 
+Dieses Repository enthält die **React**-Implementierung.
+
+---
+
+## ✨ Features
+
+- 🔍 Rezeptsuche nach Stichworten
+- 🥗 Anzeige vegetarischer Vorschläge
+- 🌍 Navigation nach Länderküchen (Cuisines)
+- ⭐ Favoritenverwaltung mit Kontext-API
+- 🖨️ Export von Rezeptinformationen als PDF
+- 🧭 Routing via `react-router-dom`
+
+---
+
+## ⚙️ Technologien
+
+- [React 19](https://react.dev/)
+- [Vite](https://vitejs.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [React Router DOM](https://reactrouter.com/)
+- [Axios](https://axios-http.com/)
+- [jsPDF](https://github.com/parallax/jsPDF)
+- [Spoonacular API](https://spoonacular.com/food-api) (für Rezeptdaten)
+
+---
+
+## 🧪 Installation
+
+```bash
+git clone https://github.com/dein-benutzername/mealquest-react.git
+cd mealquest-react
+npm install
+npm run dev
+```
+
+> Stelle sicher, dass du eine `.env`-Datei mit deinem API-Key für Spoonacular im Projektverzeichnis hast:
+
+```
+VITE_SPOONACULAR_API_KEY=dein_api_key
 ```
 
 ---
 
-## 📦 Installation
+## ▶️ Verwendung
 
-# 1. Repository klonen
-git clone https://github.com/dein-benutzername/mealquest-react.git
-cd mealquest-react
-
-# 2. Abhängigkeiten installieren
-npm install
-
-# 3. .env Datei anlegen
-touch .env
-# und einfügen:
-# VITE_SPOONACULAR_API_KEY=dein_api_key
-
-# 4. Lokalen Server starten
-npm run dev
+1. Starte den lokalen Dev-Server: `npm run dev`
+2. Öffne im Browser `http://localhost:5173`
+3. Suche nach Rezepten, navigiere durch Kategorien oder speichere Favoriten
 
 ---
 
-## 📄 Beispiel .env
+## 🗂️ Projektstruktur
 
-VITE_SPOONACULAR_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
----
-
-## 📤 PDF-Export
-
-In der Detailansicht kann ein Rezept über jsPDF als PDF-Datei exportiert werden.
-
----
-
-## 👨‍🎓 Hinweis zur Bachelorarbeit
-
-Dieses Projekt wurde im Rahmen der Bachelorarbeit von Gökmen Kiyan (myself) entwickelt und dient dem praktischen Einsatz moderner Webtechnologien.
+```text
+src/
+├── api/              → API-Kommunikation (Spoonacular)
+├── components/       → UI-Komponenten wie Navbar, SearchBar, etc.
+├── pages/            → Seiten wie Home, Favorites, RecipeDetail
+├── router/           → Routing-Konfiguration
+├── state/            → React Context für Favoritenverwaltung
+├── utils/            → Hilfsfunktionen (z. B. PDF-Export)
+```
 
 ---
 
-## 🛡️ Lizenz
+## 🧪 Vergleichskontext
 
-Dieses Projekt ist unter keiner öffentlichen Lizenz veröffentlicht und dient ausschließlich Studienzwecken.
+Dieses Projekt wurde zusätzlich in Angular und Vue implementiert. Ziel war es, Unterschiede in:
+- Entwicklungsaufwand
+- Performance
+- Strukturierung
+- Wartbarkeit
+zu untersuchen und zu dokumentieren.
+
+---
+
+## 👨‍💻 Lizenz
+
+MIT License
+
+---
+
+## 🙋‍♂️ Fragen?
+
+Bei Fragen zur Bachelorarbeit oder zum Projekt gerne direkt melden.
